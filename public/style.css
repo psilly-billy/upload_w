@@ -1,0 +1,434 @@
+/* Elegant Wedding Photo Upload - Robert & Adina */
+:root {
+  --primary: #2c1810;
+  --secondary: #6b5b4f;
+  --accent: #d4af37;
+  --accent-light: #f4e4a6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --white: #ffffff;
+  --cream: #fdfcf7;
+  --warm-gray: #f7f5f1;
+  --light-brown: #8b7355;
+  --border-radius: 12px;
+  --shadow-sm: 0 2px 4px rgba(44, 24, 16, 0.05);
+  --shadow: 0 4px 12px rgba(44, 24, 16, 0.08);
+  --shadow-lg: 0 10px 30px rgba(44, 24, 16, 0.12);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, var(--cream) 0%, var(--warm-gray) 100%);
+  color: var(--primary);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 60px;
+  padding: 48px 32px 40px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem;
+  font-weight: 500;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--light-brown) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wedding-date {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.125rem;
+  color: var(--light-brown);
+  margin-bottom: 20px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  font-style: normal;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--secondary);
+  font-weight: 400;
+}
+
+.elegant {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--light-brown);
+}
+
+/* Main Content */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Upload Section */
+.upload-section {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: var(--border-radius);
+  padding: 40px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.upload-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.875rem;
+  font-weight: 500;
+  color: var(--primary);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.upload-content p {
+  color: var(--secondary);
+  margin-bottom: 24px;
+  font-size: 1rem;
+}
+
+/* Upload Button */
+.upload-btn {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--light-brown) 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 50px;
+  padding: 16px 40px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  letter-spacing: 0.5px;
+}
+
+.upload-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
+}
+
+.upload-btn:active {
+  transform: translateY(-1px);
+}
+
+.upload-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.file-info {
+  font-size: 0.875rem;
+  color: var(--secondary);
+  margin: 0;
+}
+
+/* Progress Bar */
+.progress-container {
+  margin-top: 30px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: rgba(212, 175, 55, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--light-brown) 100%);
+  width: 0%;
+  transition: width 0.3s ease;
+  border-radius: 5px;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-text {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--secondary);
+  font-weight: 500;
+}
+
+/* File List */
+.file-list {
+  margin-top: 30px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: var(--border-radius);
+  padding: 24px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  text-align: left;
+  backdrop-filter: blur(5px);
+}
+
+.file-list h4 {
+  color: var(--primary);
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.file-item:last-child {
+  border-bottom: none;
+}
+
+.file-name {
+  font-weight: 500;
+  color: var(--primary);
+  flex: 1;
+  font-size: 0.875rem;
+  word-break: break-word;
+  margin-right: 16px;
+}
+
+.file-size {
+  color: var(--secondary);
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+/* Messages */
+.message-container {
+  margin: 16px 0;
+}
+
+.message {
+  padding: 12px 16px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  font-size: 0.875rem;
+  border: 1px solid;
+}
+
+.message.success {
+  background: #f0fdf4;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.message.error {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.message.warning {
+  background: #fffbeb;
+  color: #d97706;
+  border-color: #fed7aa;
+}
+
+/* Thank You Section */
+.thank-you-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.thank-you-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: var(--border-radius);
+  padding: 32px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  max-width: 400px;
+}
+
+.thank-you-card p {
+  color: var(--light-brown);
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 40px 0;
+  margin-top: auto;
+}
+
+footer p {
+  color: var(--light-brown);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .container {
+    padding: 24px 16px;
+  }
+  
+  header {
+    margin-bottom: 40px;
+    padding: 32px 24px;
+  }
+  
+  header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .wedding-date {
+    font-size: 1.125rem;
+  }
+  
+  .upload-section {
+    padding: 32px 24px;
+  }
+  
+  .upload-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .upload-btn {
+    width: 100%;
+    max-width: 320px;
+  }
+  
+  .thank-you-card {
+    padding: 24px;
+    margin: 0 16px;
+  }
+  
+  .file-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .file-name {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 20px 12px;
+  }
+  
+  header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .upload-section {
+    padding: 20px;
+  }
+  
+  .thank-you-card {
+    padding: 16px;
+  }
+}
+
+/* Focus States for Accessibility */
+.upload-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message {
+  animation: fadeIn 0.3s ease;
+}
+
+.file-list {
+  animation: fadeIn 0.4s ease;
+}
+
+.progress-container {
+  animation: fadeIn 0.3s ease;
+} 

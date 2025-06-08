@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robert & Adina - 14 Iunie 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Robert & Adina</h1>
+      <p class="wedding-date">14 Iunie 2025</p>
+      <p class="subtitle elegant">Împărtășește momentele tale cu noi</p>
+    </header>
+    
+    <main>
+      <div class="upload-section">
+        <input type="file" id="fileInput" multiple accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,video/mp4,video/quicktime,video/x-msvideo" class="hidden">
+        
+        <div class="upload-content">
+          <h2>Încarcă fotografiile și videoclipurile tale</h2>
+          <p>Selectează până la 50 de fișiere</p>
+          <button class="upload-btn" id="selectBtn">Alege fișierele</button>
+          <p class="file-info">Fotografii (maxim 10MB) • Videoclipuri (maxim 500MB)</p>
+        </div>
+        
+        <div class="progress-container hidden" id="progressContainer">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-text" id="progressText">Se încarcă...</div>
+        </div>
+        
+        <div class="selected-files" id="selectedFiles"></div>
+      </div>
+      
+      <div class="message-container" id="messageContainer"></div>
+      
+      <div class="thank-you-section">
+        <div class="thank-you-card">
+          <p class="elegant">Mulțumim!</p>
+        </div>
+      </div>
+    </main>
+    
+    <footer>
+      <p>Robert & Adina • 14 Iunie 2025</p>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fileInput = document.getElementById('fileInput');
+      const selectBtn = document.getElementById('selectBtn');
+      const progressContainer = document.getElementById('progressContainer');
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('progressText');
+      const messageContainer = document.getElementById('messageContainer');
+      const selectedFiles = document.getElementById('selectedFiles');
+      
+      let currentFiles = [];
+      
+      // Trigger file selection
+      selectBtn.addEventListener('click', () => fileInput.click());
+      
+      // Handle file selection
+      fileInput.addEventListener('change', handleFiles);
+      
+      function handleFiles(e) {
+        const files = Array.from(e.target.files);
+        
+        // Reset any previous messages
+        clearMessage();
+        
+        // Basic validation
+        if (files.length > 50) {
+          showMessage('Maxim 50 de fișiere per încărcare', 'error');
+          return;
+        }
+        
+        if (files.length === 0) {
+          return;
+        }
+        
+        // Filter valid files
+        const allowedTypes = [
+          'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+          'video/mp4', 'video/quicktime', 'video/x-msvideo'
+        ];
+        
+        const validFiles = files.filter(file => {
+          const isValidType = allowedTypes.includes(file.type);
+          const isImage = file.type.startsWith('image/');
+          const isVideo = file.type.startsWith('video/');
+          const maxSize = isVideo ? 500 * 1024 * 1024 : 10 * 1024 * 1024; // 500MB for videos, 10MB for images
+          const isValidSize = file.size <= maxSize;
+          return isValidType && isValidSize;
+        });
+        
+        const invalidFiles = files.length - validFiles.length;
+        
+        if (validFiles.length === 0) {
+          showMessage('Te rog selectează fișiere suportate (fotografii sub 10MB, videoclipuri sub 500MB)', 'error');
+          return;
+        }
+        
+        if (invalidFiles > 0) {
+          showMessage(`${invalidFiles} fișier(e) omis(e) (tip nesuportat sau prea mare)`, 'warning');
+        }
+        
+        currentFiles = validFiles;
+        showSelectedFiles(validFiles);
+        
+        // Auto-upload after selection
+        uploadFiles(validFiles);
+      }
+      
+      function showSelectedFiles(files) {
+        selectedFiles.innerHTML = '';
+        
+        if (files.length === 0) return;
+        
+        const container = document.createElement('div');
+        container.className = 'file-list';
+        
+        const header = document.createElement('h4');
+        header.textContent = `${files.length} fișier${files.length > 1 ? 'e' : ''} selectat${files.length > 1 ? 'e' : ''}`;
+        container.appendChild(header);
+        
+        files.forEach(file => {
+          const fileItem = document.createElement('div');
+          fileItem.className = 'file-item';
+          fileItem.innerHTML = `
+            <span class="file-name">${file.name}</span>
+            <span class="file-size">${formatFileSize(file.size)}</span>
+          `;
+          container.appendChild(fileItem);
+        });
+        
+        selectedFiles.appendChild(container);
+      }
+      
+      function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      }
+      
+      async function uploadFiles(files) {
+        try {
+          // Show progress
+          progressContainer.classList.remove('hidden');
+          progressFill.style.width = '0%';
+          progressText.textContent = 'Se pregătește încărcarea...';
+          
+          // Disable button
+          selectBtn.disabled = true;
+          selectBtn.textContent = 'Se încarcă...';
+          
+          const formData = new FormData();
+          files.forEach(file => formData.append('photos', file));
+          
+          // Simulate progress during upload
+          const progressInterval = setInterval(() => {
+            const currentWidth = parseFloat(progressFill.style.width) || 0;
+            if (currentWidth < 90) {
+              progressFill.style.width = Math.min(currentWidth + Math.random() * 10, 90) + '%';
+            }
+          }, 200);
+          
+          progressText.textContent = `Se încarcă ${files.length} fișier${files.length > 1 ? 'e' : ''}...`;
+          
+          const response = await fetch('/upload', {
+            method: 'POST',
+            body: formData
+          });
+          
+          clearInterval(progressInterval);
+          progressFill.style.width = '100%';
+          
+          const result = await response.json();
+          
+          if (result.success) {
+            progressText.textContent = 'Încărcare completă!';
+            showMessage(`${files.length} fișier${files.length > 1 ? 'e au' : ' a'} fost încărcat${files.length > 1 ? 'e' : ''} cu succes!`, 'success');
+            
+            // Reset after delay
+            setTimeout(() => {
+              resetForm();
+            }, 3000);
+          } else {
+            progressText.textContent = 'Eroare la încărcare';
+            showMessage(`Eroare: ${result.error}`, 'error');
+            resetButton();
+          }
+        } catch (error) {
+          console.error('Upload error:', error);
+          progressText.textContent = 'Eroare de conexiune';
+          showMessage(`Eroare de conexiune: ${error.message}`, 'error');
+          resetButton();
+        }
+      }
+      
+      function resetForm() {
+        fileInput.value = '';
+        currentFiles = [];
+        selectedFiles.innerHTML = '';
+        progressContainer.classList.add('hidden');
+        resetButton();
+        
+        // Clear success message after delay
+        setTimeout(() => {
+          clearMessage();
+        }, 5000);
+      }
+      
+      function resetButton() {
+        selectBtn.disabled = false;
+        selectBtn.textContent = 'Alege fișierele';
+      }
+      
+      function showMessage(text, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        messageDiv.textContent = text;
+        
+        messageContainer.innerHTML = '';
+        messageContainer.appendChild(messageDiv);
+        
+        // Auto-hide error and warning messages
+        if (type === 'error' || type === 'warning') {
+          setTimeout(() => {
+            if (messageContainer.contains(messageDiv)) {
+              messageDiv.remove();
+            }
+          }, 8000);
+        }
+      }
+      
+      function clearMessage() {
+        messageContainer.innerHTML = '';
+      }
+    });
+  </script>
+</body>
+</html> 
