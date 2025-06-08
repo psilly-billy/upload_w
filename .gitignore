@@ -134,4 +134,5 @@ Thumbs.db
 
 # Temporary files
 tmp/
-temp/ 
+temp/
+.service-account-key.json

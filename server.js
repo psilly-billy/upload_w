@@ -37,6 +37,11 @@ const upload = multer({
 // Serve static files from public directory
 app.use(express.static('public'));
 
+// Explicitly handle root route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Basic error handling middleware
 app.use((error, req, res, next) => {
   if (error instanceof multer.MulterError) {
@@ -114,7 +119,12 @@ app.post('/upload', upload.array('photos', 50), async (req, res) => {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    service: 'Robert & Adina Wedding Photo Uploader',
+    version: '1.0.0'
+  });
 });
 
 // 404 handler
@@ -131,7 +141,7 @@ app.use((error, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Event Photo Uploader server running on port ${PORT}`);
   console.log(`Open http://localhost:${PORT} to access the upload interface`);
