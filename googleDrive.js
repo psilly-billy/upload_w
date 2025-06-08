@@ -8,14 +8,31 @@ let driveService;
 
 async function initializeAuth() {
   if (!authClient) {
-    const keyFilePath = path.resolve(__dirname, process.env.SERVICE_ACCOUNT_KEY);
+    let serviceAccountKey;
     
-    if (!fs.existsSync(keyFilePath)) {
-      throw new Error(`Service account key file not found: ${keyFilePath}`);
+    // Try to get service account key from environment variable (for DigitalOcean deployment)
+    if (process.env.SERVICE_ACCOUNT_KEY_JSON) {
+      try {
+        serviceAccountKey = JSON.parse(process.env.SERVICE_ACCOUNT_KEY_JSON);
+        console.log('Using service account key from environment variable');
+      } catch (error) {
+        throw new Error('Invalid SERVICE_ACCOUNT_KEY_JSON: ' + error.message);
+      }
     }
-    
-    // Read and parse the service account key
-    const serviceAccountKey = JSON.parse(fs.readFileSync(keyFilePath, 'utf8'));
+    // Fallback to file path (for local development)
+    else if (process.env.SERVICE_ACCOUNT_KEY) {
+      const keyFilePath = path.resolve(__dirname, process.env.SERVICE_ACCOUNT_KEY);
+      
+      if (!fs.existsSync(keyFilePath)) {
+        throw new Error(`Service account key file not found: ${keyFilePath}`);
+      }
+      
+      serviceAccountKey = JSON.parse(fs.readFileSync(keyFilePath, 'utf8'));
+      console.log('Using service account key from file');
+    }
+    else {
+      throw new Error('Neither SERVICE_ACCOUNT_KEY_JSON nor SERVICE_ACCOUNT_KEY environment variable is set');
+    }
     
     // Create JWT auth client with Google Drive scopes
     authClient = new google.auth.JWT(
