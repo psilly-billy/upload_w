@@ -15,7 +15,6 @@ lerna-debug.log*
 # Google Service Account Key (IMPORTANT: Never commit this!)
 service-account-key.json
 *-service-account-key.json
-*.json
 
 # Logs
 logs
